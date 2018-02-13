@@ -125,7 +125,7 @@ def main(unused_argv):
 
   # Create the Estimator
   mnist_classifier = tf.estimator.Estimator(
-      model_fn=cnn_model_fn, model_dir="/tmp/mnist_convnet_model")
+      model_fn=cnn_model_fn, model_dir="mnist_convnet_model")
 
   # Set up logging for predictions
   # Log the values in the "Softmax" tensor with label "probabilities"
@@ -142,7 +142,7 @@ def main(unused_argv):
       shuffle=True)
   mnist_classifier.train(
       input_fn=train_input_fn,
-      steps=20000,
+      steps=1,#20000,
       hooks=[logging_hook])
 
   # Evaluate the model and print results
@@ -154,6 +154,18 @@ def main(unused_argv):
   eval_results = mnist_classifier.evaluate(input_fn=eval_input_fn)
   print(eval_results)
 
+## DEAD CODE
+  # cols = [tf.feature_column.numeric_column(key='x')]
+  # feature_spec = tf.feature_column.make_parse_example_spec(cols)
+  # export_input_fn = tf.contrib.learn.build_parsing_serving_input_fn(feature_spec)
+#   mnist_classifier.export_savedmodel(export_dir_base='lol', serving_input_receiver_fn=serving_input_receiver_fn)
+#
+# def serving_input_receiver_fn():
+#     serialized_tf_example = tf.placeholder(dtype=tf.string, shape=[None], name='input')
+#     receiver_tensors      = {"predictor_inputs": serialized_tf_example}
+#     feature_spec          = {"x": tf.FixedLenFeature([784],tf.float32)}
+#     features              = tf.parse_example(serialized_tf_example, feature_spec)
+#     return tf.estimator.export.ServingInputReceiver(features, receiver_tensors)
 
 if __name__ == "__main__":
   tf.app.run()
